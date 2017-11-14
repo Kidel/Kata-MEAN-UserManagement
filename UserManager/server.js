@@ -1,18 +1,19 @@
-const express = require('express');
+var express = require('express');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-const path = require('path');
+var path = require('path');
 var logger = require('morgan');
 var debug = require('debug')('UserManagement:server');
 var session = require('express-session');
+var MongoStore = require('connect-mongo')(session)
 
 var config = require("./config");
 
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-mongoose.connect('mongodb://localhost/UserManagement', { useMongoClient: true });
+mongoose.connect('mongodb://localhost/UserManagement', { useMongoClient: true }); // TODO username and password from config
 
-const app = express();
+var app = express();
 var server = require('http').Server(app);
 
 app.set('trust proxy', 1); // trust first proxy
@@ -20,24 +21,30 @@ app.use(session({
     secret: config.cookieSecret,
     resave: false,
     saveUninitialized: true,
-    store: require('mongoose-session')(mongoose),
+    maxAge: new Date(Date.now() + 3600000),
+    store: new MongoStore({mongooseConnection: mongoose.connection}),
     cookie: { secure: false } //TODO in production change to true
 }));
 
 // API file for interacting with MongoDB
-const api = require('./server/routes/api');
+var api = require('./server/routes/api');
 
 // Parsers
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Angular DIST output folder
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// API location
+// API location 
 app.use('/api', api);
+// Angular routes
+app.all('/*', function(req, res, next) {
+    // Just send the index.html for other files to support HTML5Mode
+    res.sendFile('/dist/index.html', { root: __dirname });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
