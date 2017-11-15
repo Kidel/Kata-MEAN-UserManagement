@@ -12,35 +12,19 @@ import { UserService } from '../user.service'
 export class ListenerComponent implements AfterViewInit { 
   
   timer;
+  mouseListener:() => void;
+  keyboardListener:() => void;
   
   constructor(private renderer:Renderer2, private user:UserService) { 
     this.resetTimer();
    }
 
   ngAfterViewInit() {
-    this.renderer.listen('window', 'click', () => {
-      this.setActiveAndResetTimer();
-      console.log("click");
-    });
-    /*
-    this.renderer.listen('window', 'mousemove', () => {
-      this.setActiveAndResetTimer();
-      console.log("move");
-    });
-    this.renderer.listen('window', 'keypress', () => {
-      this.setActiveAndResetTimer();
-      console.log("keypress");
-    });
-    this.renderer.listen('window', 'touchmove', () => {
-      this.setActiveAndResetTimer();
-      console.log("touch");
-    });
-    this.renderer.listen('window', 'mousewheel', () => {
-      this.setActiveAndResetTimer();
-      console.log("wheel");
-    });
-    */
+    this.activateListeners();
+  }
 
+  ngOnDestroy() {
+    this.deactivateListeners();
   }
 
   resetTimer() {
@@ -52,6 +36,24 @@ export class ListenerComponent implements AfterViewInit {
       if(this.user.getStatus()) this.user.persistStatus(false);
       this.user.setStatus(false);
     }, 15 * 1000); // TODO longer period
+  }
+
+  activateListeners() {
+    console.log("activating listeners");
+    this.mouseListener = this.renderer.listen('window', 'click', () => {
+      this.setActiveAndResetTimer();
+      console.log("click");
+    });
+    this.keyboardListener = this.renderer.listen('window', 'keypress', () => {
+      this.setActiveAndResetTimer();
+      console.log("keypress");
+    });
+  }
+
+  deactivateListeners() {
+    console.log("deactivating listeners");
+    if(this.mouseListener) this.mouseListener();
+    if(this.keyboardListener) this.keyboardListener();
   }
 
   setActive() {
