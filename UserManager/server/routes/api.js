@@ -69,7 +69,7 @@ router
 
     .put('/updateStatus', (req, res) => {
         if(req.session.email == null) {
-            res.json({status:false, err: "not logged"});
+            return res.json({status:false, err: "not logged"});
         }
         var email = req.session.email;
         var status = req.body.status;
