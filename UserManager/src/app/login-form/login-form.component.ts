@@ -16,7 +16,7 @@ export class LoginFormComponent implements OnInit {
   constructor(private http: HttpClient, private router: Router, private user:UserService) {}
 
   loginResponseBehavior = data => this.user.setLogin(data['email'], data['logged'], () => { if(!data['logged']) console.log(data['err']); else this.router.navigate(['dashboard']);});
-  requestErrorBehavior = err => { console.log('Something went wrong with the request!'); }; // TODO: check 4xx and 5xx errors
+  requestErrorBehavior = err => { console.log('Something went wrong with the request!'); }; 
   
   ngOnInit() {
     // Make the HTTP request:
@@ -29,12 +29,8 @@ export class LoginFormComponent implements OnInit {
   // TODO should use a common library for login and logout operations
   loginUser(e) {
   	e.preventDefault();
-  	//console.log(e);
   	var email = e.target.elements[0].value;
   	var password = e.target.elements[1].value;
-    //console.log(username, password);
-    //return false;
-
   	this.http.post('/api/login', {email: email, password: password}).retry(3).subscribe(
       this.loginResponseBehavior, 
       this.requestErrorBehavior

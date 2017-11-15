@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Renderer2, ElementRef } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -9,7 +9,8 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
-import { UserService } from './user.service'
+import { UserService } from './user.service';
+import { ListenerComponent } from './listener/listener.component'
 
 const appRoutes:Routes = [
   {
@@ -28,7 +29,8 @@ const appRoutes:Routes = [
     LoginFormComponent,
     HeaderComponent,
     FooterComponent,
-    DashboardComponent
+    DashboardComponent,
+    ListenerComponent
   ],
   imports: [
     BrowserModule,

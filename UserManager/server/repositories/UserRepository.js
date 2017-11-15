@@ -101,11 +101,11 @@ module.exports = {
 
 	/**
 	 * UserRepository.update()
-     * @param {json} params object with data
+     * @param {json} params object with data {email:email, modifiedObj: {...}}
      * @param {function} callback Function with two parameters, err and data
 	 */
 	update: function (params, callback) {
-		UserModel.findOne({_id: params.id}, function (err, User) {
+		UserModel.findOne({email: params.email}, function (err, User) {
 			if (err) {
 				callback({
 					code: 500,
@@ -122,8 +122,11 @@ module.exports = {
                     
                     User.email = params.modifiedObj.email ? params.modifiedObj.email : User.email;
                     User.password = params.modifiedObj.password ? params.modifiedObj.password : User.password; // TODO password needs to be hashed and salted
+                    User.salt = params.modifiedObj.salt ? params.modifiedObj.salt : User.salt;
+                    User.last_action = params.modifiedObj.last_action ? params.modifiedObj.last_action : User.last_action;
+                    User.auth = params.modifiedObj.auth ? params.modifiedObj.auth : User.auth;
                     User.status = params.modifiedObj.status ? params.modifiedObj.status : User.status;
-					
+                    			
 					User.save(function (err, User) {
 						if (err) {
 							callback({

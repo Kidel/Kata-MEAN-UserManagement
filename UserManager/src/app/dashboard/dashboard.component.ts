@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import 'rxjs/add/operator/retry';
 import { Router } from '@angular/router';
 
+import { ListenerComponent } from '../listener/listener.component'
+
 import { UserService } from '../user.service'
 
 @Component({
