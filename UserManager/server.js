@@ -7,6 +7,9 @@ var debug = require('debug')('UserManagement:server');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session)
 
+var cron = require('node-cron');
+var StatusFixer = require('./server/modules/StatusFixer')
+
 var config = require("./config");
 
 var mongoose = require('mongoose');
@@ -141,3 +144,13 @@ function onListening() {
   debug('Listening on ' + bind);
   console.log('Listening on ' + bind);
 }
+
+
+/**
+ * Scheduled Task
+ */
+
+ cron.schedule('*/2 * * * *', function(){
+   console.log('Fixing user status');
+    StatusFixer.fix();
+ })

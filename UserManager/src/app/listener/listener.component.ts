@@ -12,6 +12,7 @@ import { UserService } from '../user.service'
 export class ListenerComponent implements AfterViewInit { 
   
   timer;
+  updateTimer;
   mouseListener:() => void;
   keyboardListener:() => void;
   
@@ -21,10 +22,16 @@ export class ListenerComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.activateListeners();
+
+    this.updateTimer = setInterval(() => {
+      console.log("updating");
+      this.user.persistStatus(this.user.getStatus());
+    }, 60 * 1000);
   }
 
   ngOnDestroy() {
     this.deactivateListeners();
+    this.deactivateTimers();
   }
 
   resetTimer() {
@@ -65,5 +72,15 @@ export class ListenerComponent implements AfterViewInit {
   setActiveAndResetTimer() {
     this.setActive(); 
     this.resetTimer();
+  }
+
+  deactivateTimers() {
+    console.log("deactivating all timers");
+    if (this.updateTimer) {
+      clearInterval(this.updateTimer);
+    }
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
   }
 } 

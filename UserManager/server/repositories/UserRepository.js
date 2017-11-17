@@ -125,7 +125,7 @@ module.exports = {
                     User.salt = params.modifiedObj.salt ? params.modifiedObj.salt : User.salt;
                     User.last_action = params.modifiedObj.last_action ? params.modifiedObj.last_action : User.last_action;
                     User.auth = params.modifiedObj.auth ? params.modifiedObj.auth : User.auth;
-                    User.status = params.modifiedObj.status ? params.modifiedObj.status : User.status;
+                    User.status = typeof(params.modifiedObj.status)!='undefined' ? params.modifiedObj.status : User.status;
                     			
 					User.save(function (err, User) {
 						if (err) {
